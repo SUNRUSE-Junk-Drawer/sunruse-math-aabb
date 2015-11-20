@@ -1,0 +1,91 @@
+<html>
+	<script src="../external/sunruse-math-vector.js"></script>
+	<script src="browser.js"></script>
+	<script>
+		window.addEventListener("load", function() {
+			var tests = {
+				misc: {
+					create: [{
+						name: "point",
+						value: [4, 7]
+					}]
+				},
+				point: {
+					expand: [{
+						name: "input bounds",
+						value: {min:[6, 10], max:[20, 14]}
+					}, {
+						name: "input point",
+						value: [4, 17]
+					}, {
+						name: "output",
+						value: {min:[], max:[]}
+					}],
+					constrain: [{
+						name: "input bounds",
+						value: {min:[6, 10], max:[20, 14]}
+					}, {
+						name: "input point",
+						value: [4, 17]
+					}, {
+						name: "output",
+						value: []
+					}],
+					contains: [{
+						name: "input bounds",
+						value: {min:[6, 10], max:[20, 14]}
+					}, {
+						name: "input point",
+						value: [7, 13]
+					}]
+				}
+			}
+
+			var categories = document.createElement("ul")
+
+			for(var category in tests) {
+				var catEl = document.createElement("li")
+				catEl.appendChild(document.createTextNode(category))
+
+				var testsEl = document.createElement("ul")
+				for(var test in tests[category]) {
+					var testEl = document.createElement("li")
+					testEl.appendChild(document.createTextNode(test + ": "))
+					
+					var testObj = tests[category][test]
+
+					var argsEl = document.createElement("ul")
+
+					var argStrings = [], args = [], output = undefined
+					for(var i = 0; i < testObj.length; i++) {
+						var arg = testObj[i]
+						args.push(arg.value)
+						if(arg.name == "output") {
+							output = arg.value
+						} else {
+							var argEl = document.createElement("li")
+							argEl.appendChild(document.createTextNode(arg.name + ": " + JSON.stringify(arg.value)))
+							argsEl.appendChild(argEl)
+						}
+					}
+	
+					var returned = SUNRUSE.math.aabb[test].apply(null, args)
+					var argEl = document.createElement("li")
+					argEl.appendChild(document.createTextNode("Result: " + JSON.stringify(output || returned)))
+					argsEl.appendChild(argEl)
+					testEl.appendChild(argsEl)
+
+					testsEl.appendChild(testEl)
+				}
+
+				catEl.appendChild(testsEl)
+
+				categories.appendChild(catEl)
+			}
+
+			document.body.appendChild(categories)
+		})
+	</script>
+	<body>
+	</body>
+</html>
